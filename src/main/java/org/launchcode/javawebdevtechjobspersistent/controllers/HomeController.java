@@ -2,6 +2,7 @@ package org.launchcode.javawebdevtechjobspersistent.controllers;
 
 import org.launchcode.javawebdevtechjobspersistent.models.Employer;
 import org.launchcode.javawebdevtechjobspersistent.models.Job;
+import org.launchcode.javawebdevtechjobspersistent.models.Skill;
 import org.launchcode.javawebdevtechjobspersistent.models.data.EmployerRepository;
 import org.launchcode.javawebdevtechjobspersistent.models.data.JobRepository;
 import org.launchcode.javawebdevtechjobspersistent.models.data.SkillRepository;
@@ -57,25 +58,37 @@ public class HomeController {
             return "add";
         }
 
-        
+
         Employer employer = employerRepository.findById(employerId).get();
         newJob.setEmployer(employer);
 
+
+        List<Skill> skillObjects = (List<Skill>) skillRepository.findAllById(skills);
+        newJob.setSkills(skillObjects);
         jobRepository.save(newJob);
-        model.addAttribute("jobs", jobRepository.findAll());
-        return "list-jobs";
+
+        return "redirect:view";
     }
 
     @GetMapping("view/{jobId}")
     public String displayViewJob(Model model, @PathVariable int jobId) {
-        Optional optionalJob = jobRepository.findById(jobId);
+        Optional optJob = jobRepository.findById(jobId);
 
-        if(optionalJob.isPresent()){
-            Job job = (Job) optionalJob.get();
+        if(optJob.isPresent()){
+            Job job = (Job) optJob.get();
             model.addAttribute("job", job);
             return "view";
-        }else
-            return "redirect:";
+        }else{
+            model.addAttribute("jobs", jobRepository.findAll());
+            return "list-jobs";
+        }
+    }
+
+    @GetMapping("view")
+    public String displayView(Model model){
+
+            model.addAttribute("jobs", jobRepository.findAll());
+            return "list-jobs";
 
     }
 

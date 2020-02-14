@@ -37,8 +37,15 @@ public class JobData {
 
             String aValue = getFieldValue(job, column);
 
-            if (aValue != null && aValue.toLowerCase().contains(value.toLowerCase())) {
+            if (aValue != null && aValue.toLowerCase().contains(value.toLowerCase()) && !column.equals("skill")) {
                 results.add(job);
+            } else {
+                for(Skill ajobSkill : job.getSkills()){
+                    if(ajobSkill.toString().toLowerCase().equals(value.toLowerCase())){
+                        results.add(job);
+                        break;
+                    }
+                }
             }
         }
 
@@ -51,7 +58,8 @@ public class JobData {
             theValue = job.getName();
         } else if (fieldName.equals("employer")){
             theValue = job.getEmployer().toString();
-        } else {
+        }
+        else {
             theValue = job.toString();
         }
 
@@ -76,7 +84,7 @@ public class JobData {
                 results.add(job);
             } else if (job.getEmployer().toString().toLowerCase().contains(value.toLowerCase())) {
                 results.add(job);
-            } else if (job.getSkills().contains(value.toLowerCase())) {
+            } else if (job.getSkills().toString().toLowerCase().contains(value.toLowerCase())) {
                 results.add(job);
             } else if (job.toString().toLowerCase().contains(value.toLowerCase())) {
                 results.add(job);
